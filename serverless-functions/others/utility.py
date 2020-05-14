@@ -16,7 +16,7 @@ def createOrUpdateGlobalConfig(es, config_db="config", globalConfig=None):
     # print("Adding global configuration to ES.")
     config = {}
     config['attributeOptions'] = []
-    config['attributeOptions'].append({ 'type': 'String', 'similarityTypes': ['Equal', 'EqualIgnoreCase', 'BM25', 'Semantic USE', 'None'], 'reuseStrategy': ['Best Match'] })
+    config['attributeOptions'].append({ 'type': 'String', 'similarityTypes': ['Equal', 'EqualIgnoreCase', 'BM25', 'Semantic USE', 'Levenshtein', 'None'], 'reuseStrategy': ['Best Match'] })
     config['attributeOptions'].append({ 'type': 'Integer', 'similarityTypes': ['Equal', 'McSherry More', 'McSherry Less', 'INRECA More', 'INRECA Less','Interval', 'None'], 'reuseStrategy': ['Best Match', 'Maximum', 'Minimum', 'Mean', 'Median', 'Mode'] })
     config['attributeOptions'].append({ 'type': 'Float', 'similarityTypes': ['Equal', 'McSherry More', 'McSherry Less', 'INRECA More', 'INRECA Less','Interval', 'None'], 'reuseStrategy': ['Best Match', 'Maximum', 'Minimum', 'Mean', 'Median'] })
     config['attributeOptions'].append({ 'type': 'Boolean', 'similarityTypes': ['Equal', 'None'], 'reuseStrategy': ['Best Match', 'Maximum', 'Minimum', 'Mean', 'Median'] })

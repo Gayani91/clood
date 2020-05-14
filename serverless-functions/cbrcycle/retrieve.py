@@ -25,6 +25,8 @@ def getQueryFunction(caseAttrib, queryValue, weight, simMetric, *args, **kwargs)
   elif simMetric == "Equal":
     interval = 2.0 # TO BE REPLACED WITH SUPPLIED interval
     return Interval(caseAttrib, queryValue, interval, weight)
+  elif simMetric == "Levenshtein":
+    return LevenshteinRatio(caseAttrib, queryValue, weight)
   else:
     return MostSimilar(caseAttrib, queryValue, weight)
 
@@ -286,3 +288,52 @@ def MatchAll():
   retrieve more than 10,000. 
   """
   return { "match_all": {} }
+
+
+def LevenshteinRatio(caseAttrib, queryValue, weight):
+  """
+  Returns the similarity of two attributes following the Levenshtein distance and ratio.
+  """
+  # try:
+  queryValue = float(queryValue)
+  # build query string
+  queryFnc = {
+    "function_score": {
+      "query": {
+        "match_all": {}
+      },
+      "script_score": {
+        "script": {
+          "params": {
+            "queryValue": queryValue
+          },
+          "source": """
+                        String caseAttr = doc[caseAttrib].value.toLowerCase();
+                        String queryVal = params.queryValue.toLowerCase();
+
+                        float caseAttribLen = (float)caseAttr.length();
+                        float queryValueLen = (float)queryVal.length();
+                        int [] costs = new int [queryVal.length() + 1];
+
+                        for (int j = 0; j < costs.length; j++)
+                            costs[j] = j;
+
+                        for (int i = 1; i <= caseAttr.length(); i++) {
+                            costs[0] = i;
+                            int nw = i - 1;
+                            for (int j = 1; j <= queryVal.length(); j++) {
+                                int cj = Math.min(1 + Math.min(costs[j], costs[j - 1]), caseAttr.charAt(i - 1) == queryVal.charAt(j - 1) ? nw : nw + 1);
+                                nw = costs[j];
+                                costs[j] = cj;
+                            }
+                        }
+
+                        return  (queryValueLen+caseAttribLen - costs[queryVal.length()])/(queryValueLen+caseAttribLen);
+                    """
+        }
+      },
+      "boost": weight,
+      "_name": "levenshtein"
+    }
+  }
+  return queryFnc
