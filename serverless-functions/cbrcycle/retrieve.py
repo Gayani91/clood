@@ -292,10 +292,9 @@ def MatchAll():
 
 def LevenshteinRatio(caseAttrib, queryValue, weight):
   """
-  Returns the similarity of two attributes following the Levenshtein distance and ratio.
+  Returns the similarity value of two attributes following the Levenshtein distance and ratio.
   """
-  # try:
-  queryValue = float(queryValue)
+
   # build query string
   queryFnc = {
     "function_score": {
