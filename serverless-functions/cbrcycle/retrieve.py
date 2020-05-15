@@ -309,26 +309,27 @@ def LevenshteinRatio(caseAttrib, queryValue, weight):
           },
           "source": """
                         String caseAttr = doc[caseAttrib].value.toLowerCase();
-                        String queryVal = params.queryValue.toLowerCase();
+                          String queryVal = params.queryValue.toLowerCase();
 
-                        float caseAttribLen = (float)caseAttr.length();
-                        float queryValueLen = (float)queryVal.length();
-                        int [] costs = new int [queryVal.length() + 1];
+                          float caseAttribLen = (float)caseAttr.length();
+                          float queryValueLen = (float)queryVal.length();
+        
+                          int [] costs = new int [queryVal.length() + 1];
 
-                        for (int j = 0; j < costs.length; j++)
-                            costs[j] = j;
-
-                        for (int i = 1; i <= caseAttr.length(); i++) {
-                            costs[0] = i;
-                            int nw = i - 1;
-                            for (int j = 1; j <= queryVal.length(); j++) {
-                                int cj = Math.min(1 + Math.min(costs[j], costs[j - 1]), caseAttr.charAt(i - 1) == queryVal.charAt(j - 1) ? nw : nw + 1);
-                                nw = costs[j];
-                                costs[j] = cj;
-                            }
-                        }
-
-                        return  (queryValueLen+caseAttribLen - costs[queryVal.length()])/(queryValueLen+caseAttribLen);
+                          for (def j = 0; j < costs.length; j++)
+                              costs[j] = j;
+                  
+                          for (def i = 1; i <= caseAttr.length(); i++) {
+                              costs[0] = i;
+                              int nw = i - 1;
+                              for (def j = 1; j <= queryVal.length(); j++) {
+                                  int cj = Math.min(1 + Math.min(costs[j], costs[j - 1]), caseAttr.charAt(i - 1) == queryVal.charAt(j - 1) ? nw : nw + 1);
+                                  nw = costs[j];
+                                  costs[j] = cj;
+                              }
+                          }
+                  
+                          return  (queryValueLen+caseAttribLen - costs[queryVal.length()])/(queryValueLen+caseAttribLen);
                     """
         }
       },
